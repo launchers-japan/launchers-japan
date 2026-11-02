@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>キャピタルランチャーズ｜インド進出 Go or No-Go？ 判定プログラム</title>
+  <!-- Google Fonts: Noto Sans JP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       CSS Variables & Reset
+       ========================================================================== */
+    :root {
+      --color-primary-navy: #0A192F;
+      --color-navy-light: #172A45;
+      --color-navy-dark: #050C18;
+      --color-accent-gold: #D4AF37;
+      --color-gold-hover: #BF9B27;
+      --color-text-main: #333333;
+      --color-text-sub: #555555;
+      --color-text-muted: #8892B0;
+      --color-text-light: #F8F9FA;
+      --color-bg-light: #F4F6F9;
+      --color-bg-white: #FFFFFF;
+      --color-border: #E2E8F0;
+      --color-card-border: rgba(212, 175, 55, 0.25);
+      --font-base: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
+      --shadow-lg: 0 16px 36px rgba(0,0,0,0.18);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-base);
+      line-height: 1.8;
+      color: var(--color-text-main);
+      background-color: var(--color-bg-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Typography Utilities */
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-accent-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.4;
+      color: var(--color-primary-navy);
+      margin-bottom: 16px;
+    }
+
+    .section-title.light {
+      color: var(--color-text-light);
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--color-text-sub);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Buttons / CTA */
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #DFBE52 0%, #D4AF37 50%, #B89222 100%);
+      color: #0A192F;
+      font-size: 1.25rem;
+      font-weight: 800;
+      padding: 20px 48px;
+      border-radius: 50px;
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(212, 175, 55, 0.55);
+      background: linear-gradient(135deg, #EAD068 0%, #DFBE52 50%, #C49E28 100%);
+    }
+
+    /* ==========================================================================
+       Header
+       ========================================================================== */
+    .site-header {
+      background-color: var(--color-primary-navy);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo-box {
+      background-color: #FFFFFF;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-logo-box img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-title-text {
+      color: var(--color-text-light);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================================================
+       Section 1: Hero / First View
+       ========================================================================== */
+    .hero-section {
+      background: radial-gradient(circle at 80% 20%, #172A45 0%, #0A192F 70%, #050C18 100%);
+      color: var(--color-text-light);
+      padding: 80px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(rgba(212, 175, 55, 0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--color-accent-gold);
+      color: var(--color-accent-gold);
+      padding: 6px 20px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .hero-main-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-main-title span {
+      color: var(--color-accent-gold);
+    }
+
+    .hero-sub-title {
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: #CCD6F6;
+      margin-bottom: 44px;
+      text-align: left;
+      background: rgba(23, 42, 69, 0.6);
+      padding: 24px 32px;
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--color-accent-gold);
+    }
+
+    /* Badges */
+    .hero-badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .badge-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 20px 16px;
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+
+    .badge-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--color-accent-gold);
+    }
+
+    .badge-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #E6F1FF;
+      line-height: 1.5;
+    }
+
+    .hero-cta {
+      margin-top: 10px;
+    }
+
+    /* ==========================================================================
+       Section 2: Challenges (課題提起)
+       ========================================================================== */
+    .challenges-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-light);
+    }
+
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .challenge-card {
+      background-color: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      padding: 36px 28px;
+      box-shadow: var(--shadow-sm);
+      border-top: 4px solid #C53030;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .challenge-num {
+      position: absolute;
+      top: -16px;
+      left: 28px;
+      background-color: #C53030;
+      color: #FFFFFF;
+      font-size: 0.85rem;
+      font-weight: 900;
+      padding: 2px 14px;
+      border-radius: 20px;
+    }
+
+    .challenge-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-primary-navy);
+      margin-top: 8px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .challenge-desc {
+      font-size: 0.95rem;
+      color: var(--color-text-sub);
+      line-height: 1.75;
+    }
+
+    /* ==========================================================================
+       Section 3: Solution (解決策)
+       ========================================================================== */
+    .solution-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-white);
+    }
+
+    .solution-box {
+      background: linear-gradient(135deg, #F0F4F8 0%, #E8EEF5 100%);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .solution-box-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .solution-lead-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-primary-navy);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .solution-lead-text span {
+      background: linear-gradient(transparent 70%, rgba(212, 175, 55, 0.4) 70%);
+    }
+
+    .solution-body-text {
+      font-size: 1rem;
+      color: var(--color-text-main);
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+
+    .solution-visual-card {
+      background-color: var(--color-primary-navy);
+      color: #FFFFFF;
+      padding: 32px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-accent-gold);
+    }
+
+    .solution-visual-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-accent-gold);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .gate-badge-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(255,255,255,0.2);
+    }
+
+    .decision-badge {
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .decision-go { background: #28a745; color: #fff; }
+    .decision-conditional { background: #ffc107; color: #212529; }
+    .decision-nogo { background: #6c757d; color: #fff; }
+
+    /* ==========================================================================
+       Section 4: Features & Benefits (機能とメリット)
+       ========================================================================== */
+    .features-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-light);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .feature-card {
+      background-color: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      padding: 36px 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      transition: all 0.25s ease;
+    }
+
+    .feature-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-accent-gold);
+    }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .feature-index {
+      width: 42px;
+      height: 42px;
+      background: var(--color-primary-navy);
+      color: var(--color-accent-gold);
+      font-weight: 900;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .feature-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-primary-navy);
+      line-height: 1.4;
+    }
+
+    .feature-detail-block {
+      margin-bottom: 16px;
+    }
+
+    .feature-detail-label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .label-func {
+      background-color: #E2E8F0;
+      color: var(--color-primary-navy);
+    }
+
+    .label-bene {
+      background-color: #FEF3C7;
+      color: #92400E;
+    }
+
+    .feature-text {
+      font-size: 0.95rem;
+      color: var(--color-text-main);
+      line-height: 1.75;
+    }
+
+    /* ==========================================================================
+       Section 5: Timeline & 4 Gates (6か月・4ゲート)
+       ========================================================================== */
+    .timeline-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-white);
+    }
+
+    .timeline-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .timeline-block {
+      margin-bottom: 40px;
+      background-color: var(--color-bg-light);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      border-left: 6px solid var(--color-primary-navy);
+    }
+
+    .timeline-phase-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--color-primary-navy);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timeline-list {
+      list-style: none;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      color: var(--color-text-main);
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--color-text-muted);
+    }
+
+    .gate-item {
+      background: #FFFFFF;
+      border: 2px solid var(--color-accent-gold);
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      margin-top: 18px;
+      font-weight: 700;
+      color: var(--color-primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .gate-tag {
+      background: var(--color-accent-gold);
+      color: #0A192F;
+      font-weight: 900;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       Section 6: Expert Team (専門家チーム)
+       ========================================================================== */
+    .team-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-light);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+
+    .team-card-lead {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 32px;
+      background-color: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      padding: 36px;
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--color-accent-gold);
+      align-items: center;
+    }
+
+    /* プロフィール表示枠：縦長の長方形 */
+    .team-lead-img-box {
+      width: 160px;
+      height: 220px;
+      flex-shrink: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 3px solid var(--color-accent-gold);
+      background-color: #E2E8F0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .team-lead-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .team-card {
+      background-color: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .team-role {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--color-accent-gold);
+      background: var(--color-primary-navy);
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .team-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-primary-navy);
+      margin-bottom: 12px;
+    }
+
+    .team-desc {
+      font-size: 0.95rem;
+      color: var(--color-text-sub);
+      line-height: 1.7;
+    }
+
+    /* ==========================================================================
+       Section 7: FAQ (よくあるご質問)
+       ========================================================================== */
+    .faq-section {
+      padding: 96px 0;
+      background-color: var(--color-bg-white);
+    }
+
+    .faq-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 18px;
+      overflow: hidden;
+      background-color: #FFFFFF;
+      transition: all 0.2s ease;
+    }
+
+    .faq-item:hover {
+      border-color: var(--color-accent-gold);
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 24px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-primary-navy);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .faq-question::before {
+      content: "Q";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background-color: var(--color-primary-navy);
+      color: var(--color-accent-gold);
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .faq-icon-arrow {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--color-accent-gold);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .faq-icon-arrow {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      background-color: var(--color-bg-light);
+      padding: 0 28px;
+      color: var(--color-text-sub);
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 20px 28px 24px;
+      max-height: 300px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* ==========================================================================
+       Section 8: Final CTA (ラストCTA)
+       ========================================================================== */
+    .final-cta-section {
+      background: radial-gradient(circle at 50% 50%, #172A45 0%, #0A192F 100%);
+      color: var(--color-text-light);
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      border-top: 2px solid var(--color-accent-gold);
+    }
+
+    .final-cta-box {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .final-cta-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 24px;
+      color: #FFFFFF;
+      line-height: 1.4;
+    }
+
+    .final-cta-desc {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #CCD6F6;
+      margin-bottom: 48px;
+    }
+
+    /* ==========================================================================
+       Footer（会社概要・署名）
+       ========================================================================== */
+    .site-footer {
+      background-color: var(--color-navy-dark);
+      padding: 60px 0 32px;
+      color: #A0AEC0;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      line-height: 1.8;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-company-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-info {
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-info p {
+      margin: 0;
+    }
+
+    .footer-info .label {
+      color: var(--color-accent-gold);
+      font-weight: 700;
+    }
+
+    .footer-info a {
+      color: #E2E8F0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-info a:hover {
+      color: var(--color-accent-gold);
+    }
+
+    .footer-copyright {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-main-title { font-size: 2rem; }
+      .hero-badges-grid, .challenges-grid, .features-grid, .team-grid {
+        grid-template-columns: 1fr;
+      }
+      .solution-box-inner { grid-template-columns: 1fr; }
+      .team-card-lead { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-main-title { font-size: 1.65rem; }
+      .hero-sub-title { font-size: 1rem; padding: 18px 20px; }
+      .btn-cta { width: 100%; font-size: 1.1rem; padding: 18px 24px; }
+      .section-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Header
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="header-logo-box">
+        <!-- ロゴマーク画像 (白背景内に配置) -->
+        <img src="https://lh3.googleusercontent.com/d/1n7FM1O9xZVANSEanDP3OEaz3Q8p9D-Gj" alt="Capital Launchers ロゴマーク" onerror="this.style.display='none'; document.getElementById('alt-logo-text').style.display='inline-block';">
+        <span id="alt-logo-text" style="display:none; font-weight:900; color:#0A192F; font-size:1.1rem;">Capital Launchers</span>
+      </div>
+      <div class="header-title-text">
+        インド進出 Go or No-Go？ 判定プログラム
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       Section 1: ファーストビュー（FV / ヒーローエリア）
+       ========================================================================== -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-tag">キャピタルランチャーズ｜インド進出 Go or No-Go？ 判定プログラム</div>
+        
+        <h1 class="hero-main-title">
+          貴社の高度な技術を、巨大成長市場インドへ。<br>
+          <span>貴社と一緒に事業シナリオを描き、６ヶ月でインドに進出すべきか否かの意思決定を支援する</span><br>
+          「インド進出 Go or No-Go？ 判定プログラム」
+        </h1>
+
+        <div class="hero-sub-title">
+          「自社が進出すべきタイミング、手順がわからない」、「現地で伴走してくれる専門家チームがいない」とお悩みの経営者様へ。<br>
+          日印両サイドから公認会計士、弁護士、事業開発の専門家が「ワンチーム」として支援し、財務先行型のGo/No-Go判定支援を通じてインド進出のリスクを視覚化します。
+        </div>
+
+        <div class="hero-badges-grid">
+          <div class="badge-card">
+            <div class="badge-icon">⚖️</div>
+            <div class="badge-text">公認会計士35年の経験に基づく<br>財務先行型判定</div>
+          </div>
+          <div class="badge-card">
+            <div class="badge-icon">🤝</div>
+            <div class="badge-text">大手法律事務所 × CFS Partners  × IndoboXを中心として構成された日印統合ワンチーム</div>
+          </div>
+          <div class="badge-card">
+            <div class="badge-icon">🛡️</div>
+            <div class="badge-text">撤退基準を事前に数値化し<br>失敗リスクをミニマイズするアプローチ</div>
+          </div>
+        </div>
+
+        <div class="hero-cta">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSestWoBLeXqtgPZQVQg__NlfWd_h_HQsv872UcB7tMtARj4fQ/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="btn-cta">ニーズアンケートにご回答する</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 2: 課題提起（製造業の経営者が直面する3つの壁）
+       ========================================================================== -->
+  <section class="challenges-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">CHALLENGES</span>
+        <h2 class="section-title">日本の製造業の経営者様が直面する「3つの課題」</h2>
+      </div>
+
+      <div class="challenges-grid">
+        <div class="challenge-card">
+          <div class="challenge-num">課題 01</div>
+          <h3 class="challenge-title">【進出後の事業シナリオ・タスク・手順がわからない】</h3>
+          <p class="challenge-desc">
+            急速に発展するインド市場の可能性は強く感じているが、自社が進出すべきなのか、どのタイミングでどのような手順で進めればよいのか具体的な筋道が見えない。
+          </p>
+        </div>
+
+        <div class="challenge-card">
+          <div class="challenge-num">課題 02</div>
+          <h3 class="challenge-title">【現地での信頼できる専門家チームの不在】</h3>
+          <p class="challenge-desc">
+            進出先のインドにおいて、法務・税務・現地調査からビジネスの基盤構築、さらには発展・拡大まで一括して協力・伴走してくれる専門家チームが存在しない。
+          </p>
+        </div>
+
+        <div class="challenge-card">
+          <div class="challenge-num">課題 03</div>
+          <h3 class="challenge-title">【初期投資の膨大化と技術流出・撤退リスクへの不安】</h3>
+          <p class="challenge-desc">
+            現地仕様への適合コストや投資が膨らみ、万が一の際の撤退基準があいまいなまま進出し、大きな損失やコア技術の流出を招くことが怖い。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 3: 解決策の提示（ソリューション概要）
+       ========================================================================== -->
+  <section class="solution-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">SOLUTION</span>
+        <h2 class="section-title">そのお悩み、「インド進出 Go or No-Go？ 判定プログラム」が解決します。</h2>
+      </div>
+
+      <div class="solution-box">
+        <div class="solution-box-inner">
+          <div>
+            <p class="solution-lead-text">
+              法務、税務、現地コンサル等との契約、担当者が分散していては、<span>情報が分散し本社での経営判断が遅れリスクが高まります。</span>
+            </p>
+            <p class="solution-body-text">
+              本プログラムでは、キャピタルランチャーズ株式会社が<strong>「単一窓口」</strong>となり、日印の専門家チームをワンチームとして統括します。
+            </p>
+            <p class="solution-body-text">
+              大きな資金を投じる前の<strong>約6か月間（13工程・4つのゲート）で、市場の可能性・法務税務の論点・財務シナリオを検証し、あらかじめ定めた基準に基づき「Go（進出）」 「条件付きGo」 「No-Go（見送り）」</strong>を客観的に判定します。
+            </p>
+          </div>
+
+          <div class="solution-visual-card">
+            <div class="solution-visual-title">財務先行型・多段階ゲートシステム</div>
+            <p style="font-size: 0.95rem; color: #CCD6F6; line-height: 1.7; text-align: center;">
+              初期段階から「撤退基準」を数値化。<br>
+              24週間の検証期間を経て、３パターンの財務シナリオを策定し最終意思決定を行います。
+            </p>
+            <div class="gate-badge-row">
+              <span class="decision-badge decision-go">Go（進出）</span>
+              <span class="decision-badge decision-conditional">条件付きGo</span>
+              <span class="decision-badge decision-nogo">No-Go（見送り）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 4: 本事業の機能とメリット（製造業向け詳細）
+       ========================================================================== -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">FEATURES & BENEFITS</span>
+        <h2 class="section-title">本事業の機能とメリット</h2>
+      </div>
+
+      <div class="features-grid">
+        <!-- 1 -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-index">1</div>
+            <h3 class="feature-name">単一窓口による「日印専門家ワンチーム統合支援」</h3>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-func">機能</span>
+            <p class="feature-text">
+              キャピタルランチャーズ株式会社が単一窓口となり、大手法律事務所（法務）、CF Partners India（現地会計・税務）、Indobox （現地視察・マッチング・市場調査）が日印両サイドから、専任のPMO（プロジェクトマネジメント）を通じて完全統合。
+            </p>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-bene">メリット</span>
+            <p class="feature-text">
+              経営者様が複数の専門家と個別に調整する手間を解消。投資判断と事業設計を日印両サイドから一元化された高品質な判断材料が得られます。
+            </p>
+          </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-index">2</div>
+            <h3 class="feature-name">約6か月・財務先行型の「Go / No-Go 判定」と撤退基準策定</h3>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-func">機能</span>
+            <p class="feature-text">
+              本格出資や法人設立の前に、ベースケース・アップサイドケース・ダウンサイドケースの「財務3シナリオ」を作成。21週目に「最大許容損失枠」と「撤退基準」を数字で確定し、24週目に判定を行います。
+            </p>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-bene">メリット</span>
+            <p class="feature-text">
+              ダウンサイドケースでも本社が耐えられるかを事前検証。無謀な投資リスクを完全に排除し、仮に「No-Go（見送り）」となった場合でも会社の事業継続を可能にするための重要なまだこんなの、マジか。経営判断となります。
+            </p>
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-index">3</div>
+            <h3 class="feature-name">製造技術の「強みの言語化」と現地適合・知財保護</h3>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-func">機能</span>
+            <p class="feature-text">
+              4〜8週目に技術仕様書や特許を分析し、技術、強みの言語化の専門家が現地のビジネスパートナー候補に伝わる英語資料を作成。13〜15週目の現地反応テストを通じて、守るべきコア技術と現地向けに変更すべき仕様の線引きを行います。
+            </p>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-bene">メリット</span>
+            <p class="feature-text">
+              技術流出を防ぎつつ、インドの使用環境（電圧・暑さ・ほこり等）や価格帯に適合させた現実的な製品展開が可能になります。
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-index">4</div>
+            <h3 class="feature-name">社内縦割りを防ぐ「5大役割の相互連携フレームワーク」</h3>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-func">機能</span>
+            <p class="feature-text">
+              社長（最終決裁者）、プロジェクト責任者、財務・経理、技術・製造、営業・海外の5つの社内役割分担と6か月の工程表（タイムライン）を共有。
+            </p>
+          </div>
+          <div class="feature-detail-block">
+            <span class="feature-detail-label label-bene">メリット</span>
+            <p class="feature-text">
+              部署ごとの認識ギャップや縦割りによるプロジェクトの停滞を防ぎ、全社一丸となった規律ある海外挑戦を実現します。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 5: 約6か月（24週間）・13工程・4つのゲートの全体像
+       ========================================================================== -->
+  <section class="timeline-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">ROADMAP</span>
+        <h2 class="section-title">リスクを最小化する 6か月（24週間）・4ゲートの進捗ステップ</h2>
+      </div>
+
+      <div class="timeline-wrap">
+        <!-- 前半3か月 -->
+        <div class="timeline-block">
+          <div class="timeline-phase-title">
+            <span>GATE1</span> 前半3か月：構想・言語化・法務税務の洗い出し
+          </div>
+          <ul class="timeline-list">
+            <li class="timeline-item">社内5大役割のキックオフ・現状把握</li>
+            <li class="timeline-item">技術の「強みの言語化」（日英資料作成）</li>
+            <li class="timeline-item">法務・税務論点の洗い出し（論点管理表の運用）</li>
+          </ul>
+          <div class="gate-item">
+            <span class="gate-tag">GATE 1</span>
+            <div>【G1：中間レビュー（12週目）】 強み言語化・市場仮説・致命的論点の有無をチェック</div>
+          </div>
+        </div>
+
+        <!-- 後半3か月 -->
+        <div class="timeline-block">
+          <div class="timeline-phase-title">
+            <span>GATE 2〜４</span> 後半3か月：現地検証・財務シナリオ・最終判定
+          </div>
+          <ul class="timeline-list">
+            <li class="timeline-item">現地訪印・企業訪問・展示会での「反応テスト」（Indobox同行）</li>
+            <li class="gate-item" style="margin-bottom: 16px;">
+              <span class="gate-tag">GATE 2</span>
+              <div>【G2：技術ポテンシャル評価（16週目）】 現地関心度・要求仕様・価格帯の検証</div>
+            </li>
+            <li class="timeline-item">財務3シナリオ（ベース/アップ/ダウン）作成・撤退基準の数値確定</li>
+            <li class="gate-item" style="margin-bottom: 16px;">
+              <span class="gate-tag">GATE 3</span>
+              <div>【G3：論点クローズ・撤退基準確定（21週目）】 法務税務論点の完全解消とリスク確定</div>
+            </li>
+            <li class="gate-item" style="border-color: #28a745; background-color: #f6fff8;">
+              <span class="gate-tag" style="background-color: #28a745; color:#fff;">GATE 4</span>
+              <div>【G4：判定会議（24週目）】 社長による「Go / 条件付きGo / No-Go」の最終決定</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 6: 支援を統括・推進する日印専門家チーム
+       ========================================================================== -->
+  <section class="team-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">EXPERTS</span>
+        <h2 class="section-title">支援を統括・推進する日印専門家チーム</h2>
+      </div>
+
+      <div class="team-grid">
+        <!-- 全体統括 (プロフィール写真入り：縦長長方形) -->
+        <div class="team-card-lead">
+          <div class="team-lead-img-box">
+            <img src="https://lh3.googleusercontent.com/d/1kZ2Cyd5MAqEOWdxmRUCUeu2mc-G8cEUm" alt="岸田 高明 プロフィール写真" onerror="this.onerror=null; this.src='https://via.placeholder.com/160x220?text=Kishida';">
+          </div>
+          <div class="team-lead-info">
+            <span class="team-role">全体統括・単一窓口</span>
+            <h3 class="team-name">岸田 高明（キャピタルランチャーズ代表取締役CEO）</h3>
+            <p class="team-desc">
+              公認会計として35年の経験。上場支援、海外駐在（台湾・中国）、外資系企業財務責任者、上場バイオファーマCFOを歴任。投資判断と財務のプロとしてプロジェクト全体を統括。
+            </p>
+          </div>
+        </div>
+
+        <!-- 専門家 1 -->
+        <div class="team-card">
+          <span class="team-role">法務・契約・知財</span>
+          <h3 class="team-name">大手法律事務所</h3>
+          <p class="team-desc">
+            インド駐在経験を持つパートナー弁護士が、進出形態、労務・雇用、契約、知財保護、撤退リスクまで日印両面から法務を網羅。
+          </p>
+        </div>
+
+        <!-- 専門家 2 -->
+        <div class="team-card">
+          <span class="team-role">現地会計・税務</span>
+          <h3 class="team-name">CFS Partners（日本）／CF Partners India（ムンバイ）  出縄 良人氏</h3>
+          <p class="team-desc">
+            公認会計士・税理士。現地法人税、GST、移転価格、外資規制の実務および日本本社側の税務を一体整理。（2027年に出縄岸田税理士法人を開業予定）
+          </p>
+        </div>
+
+        <!-- 専門家 3 -->
+        <div class="team-card">
+          <span class="team-role">現地調査・アポイント</span>
+          <h3 class="team-name">Indobox（ハイデラバード J-Gate）／丹治 大佑氏</h3>
+          <p class="team-desc">
+            大手商社20年・インド駐在を経て日本企業専用拠点「J-Gate」を運営。現地企業訪問アポ、展示会アテンド、現地反応テストを手配。
+          </p>
+        </div>
+
+        <!-- 専門家 4 -->
+        <div class="team-card">
+          <span class="team-role">進行管理・PMO</span>
+          <h3 class="team-name">インド経験豊富なプロジェクトマネージャー</h3>
+          <p class="team-desc">
+            大手医療機器メーカーのPMOとしてインド事業5年で売上7億円を達成。工程管理、専門家調整、実務手配を代行し社内負荷を軽減。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 7: よくあるご質問（FAQ）
+       ========================================================================== -->
+  <section class="faq-section">
+    <div class="container faq-container">
+      <div class="section-header">
+        <span class="section-eyebrow">FAQ</span>
+        <h2 class="section-title">よくあるご質問</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>社内に海外事業部や英語対応できる人材が居ませんが、対応可能ですか？</span>
+            <span class="faq-icon-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            十分に対応可能です。弊社の専門家チームが強みの言語化（日英資料化）から現地訪問のアテンド、通訳手配、専門家調整まで実務を代行・伴走いたします。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>検討の結果「No-Go（見送り）」と判定された場合、どうなりますか？</span>
+            <span class="faq-icon-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            無謀な投資による失敗を防ぐことができた「成功」と位置づけます。あらかじめ設定した許容損失の範囲内で安全にプロジェクトを停止でき、作成した技術言語化資料や市場分析知見は社内の貴重な資産として残ります。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>現地企業への提案時に、自社のコア技術が流出しないか心配です。</span>
+            <span class="faq-icon-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            事前の「言語化フェーズ」において、開示する強みと保護すべきコア技術の境界線を明確に設定します。必要に応じた秘密保持契約（NDA）の締結や知財保護の論点を大手法律事務所と連携して徹底管理します。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Section 8: ラストCTA（ニーズアンケート誘導エリア）
+       ========================================================================== -->
+  <section class="final-cta-section" id="cta-area">
+    <div class="container">
+      <div class="final-cta-box">
+        <h2 class="final-cta-title">自社の技術力でインド市場へ踏み出す第一歩として</h2>
+        <p class="final-cta-desc">
+          貴社の高度な製造技術には、巨大成長市場インドを開拓する大きなポテンシャルが眠っています。<br>
+          リスクを抑えた進出の可能性や、自社の技術がインドで通用するか確かめるため、まずは以下のボタンより「ニーズアンケート」へご回答ください。
+        </p>
+        
+        <div>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSestWoBLeXqtgPZQVQg__NlfWd_h_HQsv872UcB7tMtARj4fQ/viewform?usp=header" target="_blank" rel="noopener noreferrer" class="btn-cta">ニーズアンケートにご回答する</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       Footer（会社概要・署名）
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-company-name">キャピタルランチャーズ株式会社</div>
+      <div class="footer-info">
+        <p><span class="label">代表取締役：</span>岸田 高明</p>
+        <p><span class="label">本社：</span>〒100-6213 東京都千代田区丸の内1-11-1 パシフィックセンチュリープレイス丸の内 13F</p>
+        <p><span class="label">電話番号：</span>050-1726-4742 (代表)</p>
+        <p><span class="label">メ ー ル：</span><a href="mailto:launchers.japan@gmail.com">launchers.japan@gmail.com</a></p>
+        <p><span class="label">webページ：</span><a href="https://capital.launchers-g.com" target="_blank" rel="noopener noreferrer">https://capital.launchers-g.com</a></p>
+      </div>
+      <div class="footer-copyright">
+        &copy; Capital Launchers Co., Ltd. All Rights Reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JavaScript: FAQ Accordion
+       ========================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const faqItems = document.querySelectorAll('.faq-item');
+
+      faqItems.forEach(item => {
+        const questionBtn = item.querySelector('.faq-question');
+        questionBtn.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          // Close others
+          faqItems.forEach(otherItem => {
+            otherItem.classList.remove('active');
+          });
+          // Toggle current
+          if (!isActive) {
+            item.classList.add('active');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
